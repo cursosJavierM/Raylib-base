@@ -1,7 +1,7 @@
 #include <raylib.h>
 #include <random>
 
-// variables globales
+// --- VARIABLES GLOBALES ---
 int puntos_j1 = 0;
 int puntos_j2 = 0;
 
@@ -11,6 +11,8 @@ int ronda_gan = 0; // 0 - Ninguno
 				   // 2 - Jugador 2
 
 Sound sonido_gol;
+
+// --- OBJETOS DEL JUEGO ---
 
 struct Bola
 {
@@ -29,7 +31,7 @@ int main()
 
 	// Inicializar objetos del juego
 
-	// bucle del juego
+	// bucle principal del juego
 	while (!WindowShouldClose())
 	{
 		// --- COMPROBAR imputs "entradas" del jugador. Pulsar teclas... ---
