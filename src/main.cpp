@@ -45,11 +45,13 @@ struct Pelota
 		DrawCircle(posicion.x, posicion.y, size, WHITE);
 	}
 
-	void actualizarPelota()
+	void actualizar()
 	{
 		// ToDo: Reducir la velocidad de actualización.
-		posicion = {posicion.x * (direccion.x * velocidad),
-					posicion.y * (direccion.y * velocidad)};
+		float nuevaPosicionX = posicion.x + (direccion.x * velocidad);
+		float nuevaPosicionY = posicion.y + (direccion.y * velocidad);
+
+		posicion = {nuevaPosicionX, nuevaPosicionY};
 	}
 };
 
@@ -78,7 +80,7 @@ int main()
 	// Inicializar objetos del juego
 	Pelota pelota = Pelota(
 		{sizeWidth / 2.0, sizeHeigth / 2.0},
-		{1.0, 5.0});
+		{1.0, 2.0});
 
 	// bucle principal del juego
 	while (!WindowShouldClose())
@@ -89,7 +91,7 @@ int main()
 		}
 
 		// --- ACTUALIZAR objetos ---
-		pelota.actualizarPelota();
+		pelota.actualizar();
 		// PINTAR en pantalla
 		BeginDrawing();			// Función de la librería que se pone antes de Dibujar en pantalla.
 		ClearBackground(BLACK); // Pintar de un color (NEGRO) el fondo. Esto borra lo que ya está dibujado anteriormente.
