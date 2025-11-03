@@ -12,8 +12,9 @@ int ronda_gan = 0; // 0 - Ninguno
 
 Sound sonido_gol;
 
-int sizeWidth = 1280;
-int sizeHeigth = 800;
+const int SIZE_PANTALLA_ANCHO = 1280;
+const int SIZE_PANTALLA_ALTO = 800;
+const int FPS_MAXIMOS = 60;
 
 // --- OBJETOS DEL JUEGO ---
 
@@ -47,7 +48,6 @@ struct Pelota
 
 	void actualizar()
 	{
-		// ToDo: Reducir la velocidad de actualización.
 		float nuevaPosicionX = posicion.x + (direccion.x * velocidad);
 		float nuevaPosicionY = posicion.y + (direccion.y * velocidad);
 
@@ -72,14 +72,14 @@ struct Pala
 
 int main()
 {
-	// crear una ventana
-	InitWindow(sizeWidth, sizeHeigth, "Pong");
-	InitAudioDevice(); // Inicializar audio
-	SetTargetFPS(60);  // Limitar el máximo de Frames per second (Fotogramas por segundo)
+	// --- crear una ventana ---
+	InitWindow(SIZE_PANTALLA_ANCHO, SIZE_PANTALLA_ALTO, "Pong"); // Crea la ventana de juego
+	InitAudioDevice();							 // Inicializar audio
+	SetTargetFPS(FPS_MAXIMOS);					 // Limitar el máximo de Frames per second (Fotogramas por segundo)
 
-	// Inicializar objetos del juego
+	// --- Inicializar objetos del juego ---
 	Pelota pelota = Pelota(
-		{sizeWidth / 2.0, sizeHeigth / 2.0},
+		{SIZE_PANTALLA_ANCHO / 2.0, SIZE_PANTALLA_ALTO / 2.0},
 		{1.0, 2.0});
 
 	// bucle principal del juego
@@ -92,7 +92,8 @@ int main()
 
 		// --- ACTUALIZAR objetos ---
 		pelota.actualizar();
-		// PINTAR en pantalla
+
+		// --- PINTAR en pantalla ---
 		BeginDrawing();			// Función de la librería que se pone antes de Dibujar en pantalla.
 		ClearBackground(BLACK); // Pintar de un color (NEGRO) el fondo. Esto borra lo que ya está dibujado anteriormente.
 
