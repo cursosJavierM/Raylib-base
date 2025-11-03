@@ -16,6 +16,9 @@ const int SIZE_PANTALLA_ANCHO = 1280;
 const int SIZE_PANTALLA_ALTO = 800;
 const int FPS_MAXIMOS = 60;
 
+const int ANCHURA_PALA = 30;
+const int ALTURA_PALA = 200;
+
 // --- OBJETOS DEL JUEGO ---
 
 struct Pelota
@@ -51,6 +54,18 @@ struct Pelota
 		float nuevaPosicionX = posicion.x + (direccion.x * velocidad);
 		float nuevaPosicionY = posicion.y + (direccion.y * velocidad);
 
+		if (nuevaPosicionX + size > SIZE_PANTALLA_ANCHO || nuevaPosicionX - size < 0)
+		{
+			// Todo: Modificar para puntuar. Un jugador ha metido gol.
+			direccion.x = direccion.x * -1;
+			nuevaPosicionX = posicion.x + (direccion.x * velocidad);
+			// Pelota se fue de la pantalla
+		}
+		if (nuevaPosicionY + size > SIZE_PANTALLA_ALTO || nuevaPosicionY - size < 0)
+		{
+			direccion.y = direccion.y * -1;
+			nuevaPosicionY = posicion.y + (direccion.y * velocidad);
+		}
 		posicion = {nuevaPosicionX, nuevaPosicionY};
 	}
 };
@@ -58,15 +73,41 @@ struct Pelota
 struct Pala
 {
 	Vector2 posicion;
-	int size;
+	int anchura;
+	int altura;
 	int velocidad;
 	// controlesDefinidos;
 
-	Pala(int tamano, int velocidadInicial, Vector2 posicionIncial)
+	Pala(int velocidadInicial, Vector2 posicionIncial,
+		 int anchuraIncial, int alturaInicial)
 	{
-		size = tamano;
+		anchura = anchuraIncial;
+		altura = alturaInicial;
 		velocidad = velocidadInicial;
 		posicion = posicionIncial;
+	}
+
+	void draw()
+	{
+		DrawRectangle(posicion.x, posicion.y, anchura, altura, WHITE);
+	}
+
+	void actualizar(float desplazamiento)
+	{
+		float nuevaPosicionY = posicion.y + (desplazamiento * velocidad);
+
+		if (nuevaPosicionY >= 0 && nuevaPosicionY < SIZE_PANTALLA_ALTO - ALTURA_PALA)
+		{
+			posicion.y = nuevaPosicionY;
+		}
+	}
+
+	bool aChocado(Vector2 otroObjeto)
+	{
+		// Comprobar si la pala ha chocado con la bola.
+		if (posicion.x + anchura)
+		{
+		}
 	}
 };
 
@@ -74,13 +115,16 @@ int main()
 {
 	// --- crear una ventana ---
 	InitWindow(SIZE_PANTALLA_ANCHO, SIZE_PANTALLA_ALTO, "Pong"); // Crea la ventana de juego
-	InitAudioDevice();							 // Inicializar audio
-	SetTargetFPS(FPS_MAXIMOS);					 // Limitar el máximo de Frames per second (Fotogramas por segundo)
+	InitAudioDevice();											 // Inicializar audio
+	SetTargetFPS(FPS_MAXIMOS);									 // Limitar el máximo de Frames per second (Fotogramas por segundo)
 
 	// --- Inicializar objetos del juego ---
 	Pelota pelota = Pelota(
 		{SIZE_PANTALLA_ANCHO / 2.0, SIZE_PANTALLA_ALTO / 2.0},
 		{1.0, 2.0});
+
+	Pala palaJugador1 = Pala(5, {SIZE_PANTALLA_ANCHO - ANCHURA_PALA, SIZE_PANTALLA_ALTO / 2 - ALTURA_PALA / 2},
+							 ANCHURA_PALA, ALTURA_PALA);
 
 	// bucle principal del juego
 	while (!WindowShouldClose())
@@ -88,6 +132,14 @@ int main()
 		// --- COMPROBAR imputs "entradas" del jugador. Pulsar teclas... ---
 		if (IsKeyPressed(KEY_ENTER))
 		{
+		}
+		if (IsKeyDown(KEY_UP))
+		{
+			palaJugador1.actualizar(-1);
+		}
+		if (IsKeyDown(KEY_DOWN))
+		{
+			palaJugador1.actualizar(1);
 		}
 
 		// --- ACTUALIZAR objetos ---
@@ -98,6 +150,7 @@ int main()
 		ClearBackground(BLACK); // Pintar de un color (NEGRO) el fondo. Esto borra lo que ya está dibujado anteriormente.
 
 		pelota.draw();
+		palaJugador1.draw();
 
 		EndDrawing(); // Función de la librería que libera el proceso de PINTAR.
 	}
